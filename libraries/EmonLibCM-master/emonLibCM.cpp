@@ -944,7 +944,7 @@ void EmonLibCM_interrupt()
       //  sufficient voltage to provide assurance that the crossing detector will function properly
       acSense -= acSense >> 2;
       acSense += sampleV_minusDC > 0 ? sampleV_minusDC : -sampleV_minusDC;
-      // acPresent = acSense > acDetectedThreshold;  //onsar
+      acPresent = acSense > acDetectedThreshold;  //onsar
       // Serial.print("acSense_1: "); Serial.println(acSense);  //onsar
       // Serial.print("acDetectedThreshold: "); Serial.println(acDetectedThreshold);  //onsar  32
       

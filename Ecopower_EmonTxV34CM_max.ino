@@ -14,6 +14,7 @@ eliminadas las referencias a temperatura y pulsos
 Para que funcionen las lecturas sin tener referencia de tensión
 En la libreria EmonTxCM esta comentada la linea:
 acPresent = acSense > acDetectedThreshold
+09-07-2020 Ajustado el valor de "Voltage Calibration Trans 8V F&F  258.00"
 
 */
 
@@ -35,14 +36,14 @@ void setup()
   
   Serial.println("\nEmonTx v3.4 EmonLibCM Continuous Monitoring Maximal Demo"); 
 
-  EmonLibCM_SetADC_VChannel(6, 268.97);                    // ADC Input channel, voltage calibration - for Ideal UK Adapter = 268.97 
+  EmonLibCM_SetADC_VChannel(6, 258.00);                    // ADC Input channel, voltage calibration - for Ideal UK Adapter = 268.97   Trans 8V F&F  258.00
   EmonLibCM_SetADC_IChannel(0, 20, 1.0);                // ADC Input channel, current calibration, phase calibration
   EmonLibCM_SetADC_IChannel(1, 20, 1.0);                //  The current channels will be read in this order
   EmonLibCM_SetADC_IChannel(2, 20, 1.0);                //  90.91 for 100 A : 50 mA c.t. with 22R burden - v.t. leads c.t by ~4.2 degrees
   EmonLibCM_SetADC_IChannel(3, 20, 1.0);                //  16.67 for 100 A : 50 mA c.t. with 120R burden - v.t. leads c.t by ~1 degree
 
   EmonLibCM_setADC(10, 104);                               // ADC Bits (10 for emonTx & Arduino except Due=12 bits, ADC Duration 104 us for 16 MHz operation)
-  EmonLibCM_ADCCal(3.3);                                   // ADC Reference voltage, (3.3 V for emonTx,  5.0 V for Arduino)
+  EmonLibCM_ADCCal(5.0);                                   // ADC Reference voltage, (3.3 V for emonTx,  5.0 V for Arduino)
   
   EmonLibCM_cycles_per_second(50);                         // mains frequency 50Hz, 60Hz
   EmonLibCM_datalog_period(10);                            // period of readings in seconds - normal value for emoncms.org
