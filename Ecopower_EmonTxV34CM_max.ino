@@ -25,7 +25,7 @@ acPresent = acSense > acDetectedThreshold
 bool recalibrate = false;                                  //  Do not demonstrate the recalibration functions
    
 
-typedef struct {int power1, power2, power3, power4, Vrms, T1, T2, T3, T4, T5, T6; } PayloadTX;        // package the data for RF comms
+typedef struct {int power1, power2, power3, power4, power5, power6, Vrms;} PayloadTX;        // package the data for RF comms
 
 PayloadTX emontx;                                          // create an instance
 
@@ -41,6 +41,8 @@ void setup()
   EmonLibCM_SetADC_IChannel(1, 20, 1.0);                //  The current channels will be read in this order
   EmonLibCM_SetADC_IChannel(2, 20, 1.0);                //  90.91 for 100 A : 50 mA c.t. with 22R burden - v.t. leads c.t by ~4.2 degrees
   EmonLibCM_SetADC_IChannel(3, 20, 1.0);                //  16.67 for 100 A : 50 mA c.t. with 120R burden - v.t. leads c.t by ~1 degree
+  EmonLibCM_SetADC_IChannel(4, 20, 1.0); 
+  EmonLibCM_SetADC_IChannel(5, 20, 1.0); 
 
   EmonLibCM_setADC(10, 104);                               // ADC Bits (10 for emonTx & Arduino except Due=12 bits, ADC Duration 104 us for 16 MHz operation)
   EmonLibCM_ADCCal(5.0);                                   // ADC Reference voltage, (3.3 V for emonTx,  5.0 V for Arduino)
@@ -60,19 +62,6 @@ void setup()
 
 void loop()             
 {
-
-  if (recalibrate)                                         // recalibrate should be set when new calibration values become available
-  {
-      
-    EmonLibCM_ReCalibrate_VChannel(268.97);                // ADC Input channel, voltage calibration new value 
-    EmonLibCM_ReCalibrate_IChannel(1, 90.91, 4.2);         // ADC Input channel, current calibration, phase calibration new values
-    EmonLibCM_ReCalibrate_IChannel(2, 90.91, 4.2);         //  It is only necessary to use one of these functions if that calibration 
-    EmonLibCM_ReCalibrate_IChannel(3, 90.91, 4.2);         //  value needs to be changed.
-    EmonLibCM_ReCalibrate_IChannel(4, 16.67, 1.0);         //  
-    recalibrate = false;                                   // Do it once only.
-  }
-  // Serial.print("EmonLibCM_Ready: "); Serial.println(EmonLibCM_Ready());  //onsar
-  // datalogEventPending = true
   if (EmonLibCM_Ready())   
   {
 
@@ -83,6 +72,8 @@ void loop()
     emontx.power2 = EmonLibCM_getRealPower(1); 
     emontx.power3 = EmonLibCM_getRealPower(2);
     emontx.power4 = EmonLibCM_getRealPower(3);
+    emontx.power5 = EmonLibCM_getRealPower(4);
+    emontx.power6 = EmonLibCM_getRealPower(5);
     emontx.Vrms   = EmonLibCM_getVrms() * 100;
    
     delay(50);
@@ -90,7 +81,7 @@ void loop()
     Serial.print(" V=");Serial.print(EmonLibCM_getVrms());
     Serial.print(" f=");Serial.println(EmonLibCM_getLineFrequency(),2);           
 
-    for (byte ch=0; ch<4; ch++){
+    for (byte ch=0; ch<6; ch++){
         Serial.print("Ch ");Serial.print(ch+1);
         Serial.print(" I=");Serial.print(EmonLibCM_getIrms(ch),3);
         Serial.print(" W=");Serial.print(EmonLibCM_getRealPower(ch));
